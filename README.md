@@ -12,7 +12,7 @@ This is a React project using Formik, Yup, Jotai, and React Icons for managing u
 
 ## Installation
 ```bash
-git clone https://github.com/farrukh-spec/my-project.git
+git clone https://github.com/farrukh-spec/my-project-diasorin.git
 cd my-project
 npm install
 npm start
