@@ -8,6 +8,7 @@ import { ROLES_ARR, ROLE_DEPARTMENT_MANGER, ROLE_MANAGER, ROLE_WORKER, } from '.
 import { stringNotEmpty } from '../utils/handleConfirm'
 import { Loading } from '../dashBoard'
 import WorkerForm from './WorkerForm'
+import ManagerForm from './ManagerForm'
 const AddUser = ({ update }) => {
     // validation schema
     const initialValues = {
@@ -112,7 +113,9 @@ const AddUser = ({ update }) => {
                                 {
                                     form.values.role?.value === ROLE_MANAGER.value && !update ?
                                         <div className=''>
-                                            {/* <ManagerForm form={form} /> */} manager form is not ready yet
+                                            {/* <ManagerForm form={form} /> */} 
+                                            {/* manager form is not ready yet */}
+                                            <ManagerForm/>
                                         </div>
                                         : null
                                 }

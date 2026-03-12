@@ -83,10 +83,13 @@ const WorkerForm = ({ form }) => {
                                     valueGenerator={val => ({ label: val.name || '-', value: val })}
                                     query_params={`&exclude_ids=${form.values?.labs?.map(lab => lab?.id).join(",")}`}
                                 /> */}
+
+  
+
                                 <button
                                     onClick={managerForm.submitForm}
                                     type="button"
-                                    className="btn btn-primary w-[200px]"
+                                    className="py-2.5 px-10 flex justify-between items-center bg-[#0B2C5F] text-white rounded-lg "
                                 >
                                    {lab ? 'Update Lab' : 'Assign Lab'} 
                                 </button>
