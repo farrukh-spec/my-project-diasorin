@@ -9,6 +9,7 @@ import { stringNotEmpty } from '../utils/handleConfirm'
 import { Loading } from '../dashBoard'
 import WorkerForm from './WorkerForm'
 import ManagerForm from './ManagerForm'
+import DepartmentForm from './DepartmentForm'
 const AddUser = ({ update }) => {
     // validation schema
     const initialValues = {
@@ -106,7 +107,9 @@ const AddUser = ({ update }) => {
                                 {
                                     form.values.role?.value === ROLE_DEPARTMENT_MANGER.value && !update ?
                                         <div className=''>
-                                            {/* <DepartmentManagerForm form={form} /> */}department manager form is not ready yet
+                                            {/* <DepartmentManagerForm form={form} /> */}
+                                            {/* department manager form is not ready yet */}
+                                            <DepartmentForm form={form} />
                                         </div>
                                         : null
                                 }
