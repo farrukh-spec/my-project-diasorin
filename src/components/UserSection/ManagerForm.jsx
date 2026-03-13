@@ -79,7 +79,7 @@ const ManagerForm = ({form}) => {
                             >
                                 {managerForm => (
                                     <div className="mb-5 gap-5 flex flex-col items-center">
-                                        {/* <SelectAPIField
+                                        <SelectAPIField
                                             form={managerForm}
                                             field="lab"
                                             label_text='Lab'
@@ -87,7 +87,7 @@ const ManagerForm = ({form}) => {
                                             url="api/lab"
                                             valueGenerator={val => ({ label: val.name || '-', value: val })}
                                             query_params={`&exclude_ids=${form.values?.labs?.map(lab => lab?.id).join(",")}`}
-                                        /> */}
+                                        />
 
   <div className='w-full'>
                             

@@ -80,15 +80,15 @@ const DepartmentForm = ({form}) => {
                             >
                                 {departmentForm => (
                                     <div className="mb-5 gap-5 flex flex-col items-center">
-                                        {/* <SelectAPIField
-                                            form={managerForm}
-                                            field="lab"
-                                            label_text='Lab'
-                                            placeholder='Lab'
-                                            url="api/lab"
+                                        <SelectAPIField
+                                            form={departmentForm}
+                                            field="department"
+                                            label_text='Department'
+                                            placeholder='Department'
+                                            url="api/department"
                                             valueGenerator={val => ({ label: val.name || '-', value: val })}
-                                            query_params={`&exclude_ids=${form.values?.labs?.map(lab => lab?.id).join(",")}`}
-                                        /> */}
+                                            query_params={`&exclude_ids=${form.values?.departments?.map(dept => dept?.id).join(",")}`}
+                                        />
 
   <div className='w-full'>
                             
