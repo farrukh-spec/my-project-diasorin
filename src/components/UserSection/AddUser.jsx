@@ -10,7 +10,8 @@ import { Loading } from '../dashBoard'
 import WorkerForm from './WorkerForm'
 import ManagerForm from './ManagerForm'
 import DepartmentForm from './DepartmentForm'
-const AddUser = ({ update }) => {
+import { addUser,updateUser } from '@/api/userService'
+const AddUser = ({ update=null, fetchUsers }) => {
     // validation schema
     const initialValues = {
         first_name: update ? update.first_name : "",
@@ -29,15 +30,97 @@ const AddUser = ({ update }) => {
     });
 
     const { openModal, closeModal } = useModal();
+
+    const handleSubmit = async (values,formikBag) => {
+        try {
+ console.log("Submitting...", values);
+
+            const payload = update ? {
+                first_name: values.first_name,
+                last_name: values.last_name,
+                email: values.email,
+               ... ( values.role.value === ROLE_WORKER.value &&
+
+               { lab_assignments: values.labs.map((lab) => ({
+                    lab: lab.id,
+                   })),
+                }),
+                 ... ( values.role.value === ROLE_MANAGER.value &&
+
+               { lab_assignments: values.labs.map((lab) => ({
+                    lab: lab.id,
+                    is_approval: lab.is_approval,
+                   })),
+                }),
+                 ... ( values.role.value === ROLE_DEPARTMENT_MANGER.value &&
+
+               { lab_assignments: values.departments.map((dept) => ({
+                    department: dept.id,
+                    is_approval: dept.is_approval,
+                   })),
+                }),
+            } : {
+                first_name: values.first_name,
+                last_name: values.last_name,
+                email: values.email,
+                 role_code: values.role.value,
+                  ... ( values.role.value === ROLE_WORKER.value &&
+
+               { lab_assignments: values.labs.map((lab) => ({
+                    lab: lab.id,
+                   })),
+                }),
+                ... ( values.role.value === ROLE_MANAGER.value &&
+
+               { lab_assignments: values.labs.map((lab) => ({
+                    lab: lab.id,
+                    is_approval: lab.is_approval,
+                   })),
+                }),
+                   ... ( values.role.value === ROLE_DEPARTMENT_MANGER.value &&
+
+               { lab_assignments: values.departments?.map((dept) => ({
+                    department: dept.id,
+                    is_approval: dept.is_approval,
+                   })),
+                }),
+                
+
+            };
+                console.log("payload", payload);
+                let result;
+if (update) {
+     result = await updateUser(update.id, payload);
+    console.log("update result", result);
+}
+else {     result = await addUser(payload);
+    console.log("add result", result);
+}
+formikBag.setSubmitting(false);
+fetchUsers();
+closeModal();
+
+        } catch (error) {
+            if (error.response) {
+                console.log("error response", error.response.data.description);
+            }
+        }
+    }
+
     return (
         <>
             <Formik
                 initialValues={initialValues}
                 validationSchema={schema}
-                onSubmit={(values) => console.log("adduser value", values)}
+                onSubmit={handleSubmit}
             > {form => (
 
                 <Form className='mb-16 sm:mb-6 xl:mb-0' >
+{/* 
+ <pre className="text-xs bg-gray-100 p-2 rounded mb-4">
+        {JSON.stringify({ values: form.values, errors: form.errors, touched: form.touched }, null, 2)}
+    </pre> */}
+
                     <div className='mb-5  grid sm:grid-cols-1 gap-5'>
                         <TextField
                             field={"first_name"}
@@ -145,7 +228,8 @@ const AddUser = ({ update }) => {
                                 {
                                     form.isSubmitting ?
                                         <div className='flex items-center justify-center'>
-                                            <Loading />
+                                            {/* <Loading /> */}
+                                            Loading....
                                         </div>
                                         :
                                         "Cancel"
@@ -162,7 +246,8 @@ const AddUser = ({ update }) => {
                                 {
                                     form.isSubmitting ?
                                         <div className='flex items-center justify-center'>
-                                            <Loading />
+                                            {/* <Loading /> */}
+                                            Loading....
                                         </div>
                                         :
                                         update ?

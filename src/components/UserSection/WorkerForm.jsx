@@ -10,7 +10,7 @@ import { worker } from 'globals'
 import { LuTrash2 } from 'react-icons/lu';
 import { HiPencil } from 'react-icons/hi2';
 import { FaPlus } from "react-icons/fa";
-import {APPROVER} from './constant'
+import { APPROVER } from './constant'
 import SelectAPIField from './SelectAPIField'
 const WorkerForm = ({ form }) => {
     const { openModal, closeModal } = useModal();
@@ -49,7 +49,7 @@ const WorkerForm = ({ form }) => {
         return (
             openModal({
                 title: lab ? "Edit Lab" : "Assign Lab",
-               size: "sm",
+                size: "sm",
                 height: "h-full",
                 content: (
                     <Formik
@@ -82,17 +82,18 @@ const WorkerForm = ({ form }) => {
                                     // url="api/lab"
                                     url="lab"
                                     valueGenerator={val => ({ label: val.name || '-', value: val })}
-                                    query_params={`&exclude_ids=${form.values?.labs?.map(lab => lab?.id).join(",")}`}
+                                   /// query_params={`&exclude_ids=${form.values?.labs?.map(lab => lab?.id).join(",")}`}
+                                    query_params={form.values?.labs?.map(lab => lab?.id).join(",")}
                                 />
 
-  
+
 
                                 <button
                                     onClick={managerForm.submitForm}
                                     type="button"
                                     className="py-2.5 px-10 flex justify-between items-center bg-[#0B2C5F] text-white rounded-lg "
                                 >
-                                   {lab ? 'Update Lab' : 'Assign Lab'} 
+                                    {lab ? 'Update Lab' : 'Assign Lab'}
                                 </button>
                             </div>
                         )}
@@ -106,7 +107,7 @@ const WorkerForm = ({ form }) => {
         <>
             <div className="mb-5 gap-2 flex flex-col items-center">
                 <div className="flex items-center w-full justify-between font-medium self-start">
-                   Labs (Optional)
+                    Labs (Optional)
                     <button
                         onClick={() => PopupForm()}
                         type="button"
@@ -114,7 +115,7 @@ const WorkerForm = ({ form }) => {
                     >
                         {/* <IoAddOutline className="text-xl mr-2" /> */}
                         <FaPlus className="text-xs mr-2" />
-                       
+
                         Assign Lab
                     </button>
                 </div>
@@ -134,7 +135,7 @@ const WorkerForm = ({ form }) => {
                                     <button
                                         onClick={() => PopupForm(p, i)}
                                         type="button"
-                                        className="btn btn-primary !min-w-[40px] !w-[40px] !h-[40px] !p-0 flex items-center justify-center"
+                                        className="text-white disabled:hover:scale-[1] overflow-hidden disabled:bg-gray-300 py-3 px-4 text-sm rounded-lg cursor-pointer bg-[#0B2C5F] focus:bg-[#051e43] hover:bg-[#051e43] !min-w-[40px] !w-[40px] !h-[40px] !p-0 flex items-center justify-center"
 
                                     >
                                         <HiPencil className='text-lg' />
@@ -148,7 +149,7 @@ const WorkerForm = ({ form }) => {
                                             form.setFieldValue('labs', updatedLabs);
                                         }}
                                         type="button"
-                                        className="btn btn-primary !min-w-[40px] !w-[40px] !h-[40px] !p-0 flex items-center justify-center"
+                                        className="text-white disabled:hover:scale-[1] overflow-hidden disabled:bg-gray-300 py-3 px-4 text-sm rounded-lg cursor-pointer bg-[#0B2C5F] focus:bg-[#051e43] hover:bg-[#051e43] !min-w-[40px] !w-[40px] !h-[40px] !p-0 flex items-center justify-center"
                                     >
                                         <LuTrash2 className='text-lg' />
                                     </button>

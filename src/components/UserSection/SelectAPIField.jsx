@@ -35,6 +35,7 @@ const [runFirstTime, setRunFirstime] = useState(true);
    const menuRef = useRef(null);
     const inputRef = useRef()
 
+console.log("query_params of",query_params);
 
     
     const handleSelect = (value) => {
@@ -52,10 +53,10 @@ const [runFirstTime, setRunFirstime] = useState(true);
               limit: 10,
               offset: offset ? offset : 0,
               search: search ? search : "",
-              ...(query_params ? query_params : {})
-             // query_params: query_params ? query_params : "" 
+            //  ...(query_params ? query_params : {})
+              exclude_ids: query_params ? query_params : "" 
     }
-
+console.log("param of",param);
     //const result = await api.get(`${url}?limit=10&offset=${offset ? offset : 0}&search=${search ? search : ""}${query_params ? query_params : ""}`)
 
 const result = url === "department"

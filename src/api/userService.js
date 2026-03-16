@@ -34,3 +34,7 @@ export const addUser=async(payload)=>{
     const response = await api.post("/user/",payload)
     return response;
 }
+export const updateUser=async(id,payload)=>{
+    const response = await api.put(`/user/${id}/`,payload)
+    return response;
+}

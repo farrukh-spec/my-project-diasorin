@@ -4,7 +4,7 @@ import { Eye, Ban, Pencil } from 'lucide-react'
 import { useAtom } from 'jotai'
 import { getUsersTable } from '@/api/userService'
 import { userData, tableLoading } from '@/store/countAtom'
-import { useEffect } from 'react'
+import { useEffect,useState } from 'react'
 import { toast } from 'sonner'
 import { useModal } from '@/store/useModal'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
@@ -13,21 +13,32 @@ import { userRole } from '@/store/countAtom'
 import ModalContent from './modal components/modalContent'
 import { useResetLabs } from './utils/resetValue'
 import AddUser from './UserSection/AddUser'
+import { Loading } from './dashBoard'
 AddUser
 const Users = () => {
 
+  // const perPage = 30;
+const LISTING_LIMIT = 30;
   const [Data, setData] = useAtom(userData)
   const [loading, setloading] = useAtom(tableLoading)
-
-
+const [currentPage, setCurrentPage] = useState(1);
+ const [count, setCount] = useState(0);
   //api cal
   const fetchUsers = async () => {
     // tableLoading(true)
+
     try {
       setloading(true)
+       let offset = 0;
+      
+       if (count) {
+        offset = currentPage * LISTING_LIMIT - LISTING_LIMIT;
+      } else {
+        offset = 0;
+      }
       const param = {
-        limit: 30,
-        offset: 0,
+        limit: LISTING_LIMIT,
+        offset: offset,
         search: "",
         status: "",
         role: "",
@@ -38,7 +49,7 @@ const Users = () => {
 
       const res = await getUsersTable(param);
       console.log("user res", res);
-
+ setCount(res.count)
       const data = res.payload;
       console.log("data", data);
       const formattedData = data.map(user => ({
@@ -71,7 +82,12 @@ const Users = () => {
   }, [])
 
   console.log("usertable Data", Data);
+   console.log("datacount ", count);
 
+  // const refreshListing = () => {
+  //   setCurrentPage(1);
+  //   getData(1)
+  // }
   const columns = [
     {
       name: "User Id ",
@@ -282,18 +298,21 @@ const Users = () => {
           columns={columns}
           //data={data}
           data={Data}
-          pagination
+         pagination
+           progressComponent={<Loading />}
           progressPending={loading}
-          paginationPerPage={10}
-          paginationRowsPerPageOptions={[10]}
+          paginationPerPage={LISTING_LIMIT}
+          //paginationRowsPerPageOptions={[30]}
+           onChangePage={page => setCurrentPage(page)}
+           paginationDefaultPage={currentPage}
           paginationComponentOptions={{
             noRowsPerPage: true,
-
             //  rangeSeparatorText: "",
           }}
 
           responsive
-
+          paginationTotalRows={count}
+//count={50}
           customStyles={customStyles}
         />
       </div>
@@ -334,6 +353,7 @@ const{resetAll}=useResetLabs()
         // />
           <AddUser 
           update={null}
+           fetchUsers={fetchUsers}
           />
         )})}}
     >
