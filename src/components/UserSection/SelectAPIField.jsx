@@ -7,6 +7,8 @@ import { SlArrowDown } from 'react-icons/sl';
 import { BiLoaderAlt } from 'react-icons/bi';
 import { ErrorMessage } from 'formik';
 import { getWorkerUser } from '@/api/userService';
+import { getDepartment } from '@/api/userService';
+import api from '@/api/axios';
 const SelectAPIField = (
 
 
@@ -54,7 +56,13 @@ const [runFirstTime, setRunFirstime] = useState(true);
              // query_params: query_params ? query_params : "" 
     }
 
-            const result = await getWorkerUser(param)
+    //const result = await api.get(`${url}?limit=10&offset=${offset ? offset : 0}&search=${search ? search : ""}${query_params ? query_params : ""}`)
+
+const result = url === "department"
+    ? await getDepartment(param)
+    : await getWorkerUser(param);
+
+           
             const formatted_payload = result.payload.map(item => valueGenerator(item))
             //setData(formatted_payload)
              if (withSearch) {
@@ -93,6 +101,51 @@ console.log("Error",e.message);
         }
 
     }, [])
+
+     // first time this runs
+    useEffect(() => {
+        if (runFirstTime) {
+            getData(0, true)
+        } else {
+            setRunFirstime(true)
+        }
+    }, [search, query_params])
+
+    // on scroll down 
+     const scrolledDown = () => {
+        
+        if (loading) {
+            return
+        }
+
+        if (data.length < count) {
+            getData(data.length)
+        }
+    }
+
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (menuRef.current) {
+                const { scrollTop, scrollHeight, clientHeight } = menuRef.current;
+                if (Math.ceil(scrollTop + clientHeight) === scrollHeight) {
+                    scrolledDown()
+                }
+
+            }
+        };
+
+        if (menuRef.current && showMenu) {
+            menuRef.current.addEventListener('scroll', handleScroll);
+        }
+
+        // Cleanup the event listener on unmount
+        return () => {
+            if (menuRef.current) {
+                menuRef.current.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, [showMenu, data, count]);
 
 const containerRef= useDetectClickOutside({ onTriggered: () => setShowMenu(false) });
   return (
@@ -144,11 +197,28 @@ const containerRef= useDetectClickOutside({ onTriggered: () => setShowMenu(false
                                             }}
                                             value={search ? search : ""}
                                             placeholder={placeholder ? placeholder : ""}
-                                            className={`resize-none cursor-default bg-white w-full disabled:bg-gray-100  disabled:cursor-not-allowed border border-gray-400 rounded  input-text !py-3.5 ${form.touched[field] && form.errors[field] ? "text-red-500" : ""} ${form.values[field] && " border-emerald-500"}`}
+                                            className={`resize-none cursor-default bg-white w-full disabled:bg-gray-100  disabled:cursor-not-allowed border border-gray-400 rounded  input-text !py-3.5 ${form.touched[field] && form.errors[field] ? "input-text-error" : ""} ${form.values[field] && "input-text-active"}`}
                                             onFocus={() => {
                                                 setShowMenu(true)
                                             }}
                                         />
+
+
+{/* <input
+  ref={inputRef}
+  type="text"
+  onChange={(e) => {
+      setShowMenu(true);
+      setSearch(e.target.value);
+      setData([]);
+  }}
+  value={search ? search : ""}
+  placeholder={placeholder || ""}
+  className={`input-text ${form.touched[field] && form.errors[field] ? "input-text-error" : ""} ${form.values[field] ? "input-text-active" : ""} rounded-md`}
+  onFocus={() => setShowMenu(true)}
+/> */}
+
+
                     </>
 
 }

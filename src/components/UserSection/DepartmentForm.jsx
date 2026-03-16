@@ -85,7 +85,8 @@ const DepartmentForm = ({form}) => {
                                             field="department"
                                             label_text='Department'
                                             placeholder='Department'
-                                            url="api/department"
+                                           // url="api/department"
+                                            url="department"
                                             valueGenerator={val => ({ label: val.name || '-', value: val })}
                                             query_params={`&exclude_ids=${form.values?.departments?.map(dept => dept?.id).join(",")}`}
                                         />

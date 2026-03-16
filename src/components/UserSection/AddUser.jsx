@@ -118,7 +118,7 @@ const AddUser = ({ update }) => {
                                         <div className=''>
                                             {/* <ManagerForm form={form} /> */} 
                                             {/* manager form is not ready yet */}
-                                            <ManagerForm/>
+                                            <ManagerForm form={form}/>
                                         </div>
                                         : null
                                 }

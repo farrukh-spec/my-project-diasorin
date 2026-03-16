@@ -79,7 +79,8 @@ const WorkerForm = ({ form }) => {
                                     field="lab"
                                     label_text='Lab'
                                     placeholder='Lab'
-                                    url="api/lab"
+                                    // url="api/lab"
+                                    url="lab"
                                     valueGenerator={val => ({ label: val.name || '-', value: val })}
                                     query_params={`&exclude_ids=${form.values?.labs?.map(lab => lab?.id).join(",")}`}
                                 />

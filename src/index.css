@@ -66,3 +66,71 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+
+/* 
+.input-text {
+  @apply focus:shadow-lg placeholder:text-sm text-t-dark placeholder:text-gray-400 border-gray-200 bg-white w-full text-sm outline-none transition-all origin-center focus:border-primary border-[2px] py-2 px-4 rounded-[6px] focus:outline-none;
+}
+
+.input-text-active {
+  @apply border-emerald-500;
+}
+
+.input-text-error {
+  @apply border-red-500;
+}
+
+.input-text-error ~ label {
+  @apply text-red-500;
+} */
+
+.input-text {
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.875rem 1rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input-text:focus {
+  border-color: #3b82f6; /* blue-500 */
+  box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+}
+
+.input-text-active {
+  border-color: #10b981; /* emerald-500 */
+}
+
+.input-text-error {
+  border-color: #ef4444; /* red-500 */
+}
+
+.input-text-error + label {
+  color: #ef4444;
+}
+
+/* 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+  .input-text {
+    @apply focus:shadow-lg placeholder:text-sm text-gray-800 placeholder:text-gray-400 border-gray-200 bg-white w-full text-sm outline-none transition-all origin-center focus:border-blue-500 border-[2px] py-2 px-4 rounded-[6px];
+  }
+
+  .input-text-active {
+    @apply border-emerald-500;
+  }
+
+  .input-text-error {
+    @apply border-red-500;
+  }
+
+} */
+
