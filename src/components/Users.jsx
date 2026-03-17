@@ -4,7 +4,7 @@ import { Eye, Ban, Pencil } from 'lucide-react'
 import { useAtom } from 'jotai'
 import { getUsersTable } from '@/api/userService'
 import { userData, tableLoading } from '@/store/countAtom'
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { useModal } from '@/store/useModal'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
@@ -18,20 +18,22 @@ AddUser
 const Users = () => {
 
   // const perPage = 30;
-const LISTING_LIMIT = 30;
+  const LISTING_LIMIT = 30;
   const [Data, setData] = useAtom(userData)
   const [loading, setloading] = useAtom(tableLoading)
-const [currentPage, setCurrentPage] = useState(1);
- const [count, setCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [count, setCount] = useState(0);
   //api cal
+  console.log("currentPage",currentPage);
+  
   const fetchUsers = async () => {
     // tableLoading(true)
 
     try {
       setloading(true)
-       let offset = 0;
-      
-       if (count) {
+      let offset = 0;
+
+      if (count) {
         offset = currentPage * LISTING_LIMIT - LISTING_LIMIT;
       } else {
         offset = 0;
@@ -49,7 +51,7 @@ const [currentPage, setCurrentPage] = useState(1);
 
       const res = await getUsersTable(param);
       console.log("user res", res);
- setCount(res.count)
+      setCount(res.count)
       const data = res.payload;
       console.log("data", data);
       const formattedData = data.map(user => ({
@@ -77,12 +79,16 @@ const [currentPage, setCurrentPage] = useState(1);
     }
   }
 
+  // useEffect(() => {
+  //   fetchUsers();
+  // }, [])
+
   useEffect(() => {
-    fetchUsers();
-  }, [])
+  fetchUsers();
+}, [currentPage])
 
   console.log("usertable Data", Data);
-   console.log("datacount ", count);
+  console.log("datacount ", count);
 
   // const refreshListing = () => {
   //   setCurrentPage(1);
@@ -286,34 +292,37 @@ const [currentPage, setCurrentPage] = useState(1);
           Creat New User
         </button> */}
         <Button
-        fetchUsers={fetchUsers}
+          fetchUsers={fetchUsers}
         />
       </div>
 
       {/* Table Card */}
       <div className=" shadow-md rounded overflow-hidden  ">
         <DataTable
-
-          //   title="Users List"
           columns={columns}
-          //data={data}
+          
           data={Data}
-         pagination
-           progressComponent={<Loading />}
+          pagination
+          progressComponent={<Loading />}
           progressPending={loading}
           paginationPerPage={LISTING_LIMIT}
-          //paginationRowsPerPageOptions={[30]}
-           onChangePage={page => setCurrentPage(page)}
-           paginationDefaultPage={currentPage}
+
+          onChangePage={page => setCurrentPage(page)}
+          paginationDefaultPage={currentPage}
           paginationComponentOptions={{
-            noRowsPerPage: true,
-            //  rangeSeparatorText: "",
+            noRowsPerPage: true,  
           }}
 
           responsive
           paginationTotalRows={count}
-//count={50}
           customStyles={customStyles}
+          paginationServer// importent prop
+          //   title="Users List"
+          //count={50}
+          //data={data}
+           //paginationRowsPerPageOptions={[30]}
+           //  rangeSeparatorText: "",
+          
         />
       </div>
     </div>
@@ -325,9 +334,9 @@ export default Users
 
 
 
-const Button = ({fetchUsers}) => {
+const Button = ({ fetchUsers }) => {
   const { openModal, closeModal } = useModal();
-const{resetAll}=useResetLabs()
+  const { resetAll } = useResetLabs()
 
   return (
     <button className="bg-[#0B2C5F] text-md text-white px-8 py-2  rounded-md shadow  transition"
@@ -339,23 +348,26 @@ const{resetAll}=useResetLabs()
       //   <ModalContent
       //   fetchUsers={fetchUsers}
       //   />
-        
+
       //   )
       // });resetAll()}}
 
-       onClick={() => {openModal({
-        title: "Create New User",
-        size: "sm",
-        height: "h-full",
-        content: (
-        // <ModalContent
-        // fetchUsers={fetchUsers}
-        // />
-          <AddUser 
-          update={null}
-           fetchUsers={fetchUsers}
-          />
-        )})}}
+      onClick={() => {
+        openModal({
+          title: "Create New User",
+          size: "sm",
+          height: "h-full",
+          content: (
+            // <ModalContent
+            // fetchUsers={fetchUsers}
+            // />
+            <AddUser
+              update={null}
+              fetchUsers={fetchUsers}
+            />
+          )
+        })
+      }}
     >
       Creat New User
     </button>
@@ -508,7 +520,7 @@ const{resetAll}=useResetLabs()
 //           index: index
 //         })
 //       }
-//       className={`flex flex-col gap-2 justify-center items-center 
+//       className={`flex flex-col gap-2 justify-center items-center
 //         border-2 rounded p-5 transition duration-200
 //         ${
 //           roleTabe?.index === index
