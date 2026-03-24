@@ -34,6 +34,7 @@ export const ROLES_ARR = [
     ROLE_KEEPER,
 ]
 
+
 export const USER_ACTIVE = {
     value: "active",
     label:"Active",
@@ -52,3 +53,9 @@ export const USER_STATUS = [
     USER_PENDING,
     USER_DISABLED
 ]
+export const ORDER_DESCENDING = {
+    value: "desc",
+    label:"Most Recent",
+}
+
+export const LISTING_LIMIT = 30;

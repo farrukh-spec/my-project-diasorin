@@ -16,15 +16,33 @@ import AddUser from './UserSection/AddUser'
 import { Loading } from './dashBoard'
 import FilterSelect from './Filter/FilterSelect'
 import Filters from './Filter/Filters'
+import { LISTING_LIMIT,ORDER_DESCENDING } from './UserSection/constant'
+import _ from 'lodash'
 AddUser
 const Users = () => {
 
-  // const perPage = 30;
-  const LISTING_LIMIT = 30;
+  
   const [Data, setData] = useAtom(userData)
   const [loading, setloading] = useAtom(tableLoading)
   const [currentPage, setCurrentPage] = useState(1);
   const [count, setCount] = useState(0);
+  const [filters, setFilters] = useState({
+    search: "",
+    user_status: "",
+    role: "",
+    lab: "",
+    department: "",
+    sort_order: ORDER_DESCENDING
+  })
+
+  const [appliedFilters, setAppliedFilters] = useState({
+    search: "",
+    user_status: "",
+    role: "",
+    lab: "",
+    department: "",
+    sort_order: ORDER_DESCENDING
+  })
   //api cal
   console.log("currentPage",currentPage);
   
@@ -45,7 +63,7 @@ const Users = () => {
         offset: offset,
         search: "",
         status: "",
-        role: "",
+        role: filters.role ? filters.role.value : "",
         assigned_lab: "",
         assigned_department: "",
         order: "desc",
@@ -84,13 +102,43 @@ const Users = () => {
   // useEffect(() => {
   //   fetchUsers();
   // }, [])
-
+const applyFilters = () => {
+    const copy = _.cloneDeep(filters)
+    //setCurrentPage(1);
+    
+    setAppliedFilters(copy)
+  }
   useEffect(() => {
   fetchUsers();
 }, [currentPage])
 
+ useEffect(() => {
+  fetchUsers();
+}, [appliedFilters])
+
+  const resetFilters = () => {
+   // setCurrentPage(1)
+    setFilters({
+      search: "",
+      user_status: "",
+      role: "",
+      lab: "",
+      department: "",
+      sort_order: ORDER_DESCENDING
+    })
+    setAppliedFilters({
+      search: "",
+      user_status: "",
+      role: "",
+      lab: "",
+      department: "",
+      sort_order: ORDER_DESCENDING
+    })
+  }
+
+
   console.log("usertable Data", Data);
-  console.log("datacount ", count);
+  console.log("filters ", filters.role);
 
   // const refreshListing = () => {
   //   setCurrentPage(1);
@@ -231,24 +279,7 @@ const Users = () => {
       department: "-",
       status: "ACTIVE",
     },
-    {
-      id: 3,
-      name: "Test Keeper",
-      email: "keeper@yopmail.com",
-      role: "Keeper",
-      labs: "-",
-      department: "-",
-      status: "ACTIVE",
-    },
-    {
-      id: 2,
-      name: "Test Worker",
-      email: "worker@yopmail.com",
-      role: "Worker",
-      labs: "-",
-      department: "-",
-      status: "ACTIVE",
-    },
+
   ];
 
 
@@ -290,7 +321,13 @@ const Users = () => {
     <div className='p-8 bg-gray-100 h-screen  '>
       <div className='mb-8' >
     {/* <FilterSelect /> */}
-    <Filters/>
+    <Filters
+    filters={filters}
+    setFilters={setFilters}
+     applyFilters={applyFilters}
+     appliedFilters={appliedFilters}
+     resetFilters={resetFilters}
+    />
     </div>
       <div className='flex justify-end  items-center mb-6'>
 

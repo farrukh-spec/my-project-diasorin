@@ -136,3 +136,62 @@ button:focus-visible {
 
 } */
 
+
+/* Primary outline button */
+.btn-primary-outline {
+  color: #06255B;               /* text-primary */
+  border: 2px solid #06255B;    /* border-primary */
+  background-color: transparent; /* bg-transparent */
+  overflow: hidden;
+
+  /* Smooth transition for hover/focus effects */
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover and focus */
+.btn-primary-outline:hover,
+.btn-primary-outline:focus {
+  color: #06255B;               /* text-primary */
+  border-color: #06255B;        /* border-primary */
+  background-color: #f3f3f3;    /* example for hover:bg-secondary */
+}
+
+/* Disabled state */
+.btn-primary-outline:disabled {
+  color: #ffffff;               /* disabled:text-white */
+  border: 0;                    /* disabled:border-0 */
+  background-color: #d3d3d3;   /* disabled:bg-gray-300 */
+  pointer-events: none;         /* prevent hover/click */
+}
+
+/* Optional: prevent hover transform when disabled */
+.btn-primary-outline:disabled:hover {
+  transform: none;
+}
+
+
+/* Primary filled button */
+.btn-primary {
+  color: #ffffff;                 /* text-white */
+  background-color: #06255B;      /* bg-primary */
+  overflow: hidden;               /* overflow-hidden */
+  transition: all 0.2s ease-in-out; /* smooth hover/focus transition */
+}
+
+/* Hover and focus */
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #051d47;      /* bg-primary-dark */
+}
+
+/* Disabled state */
+.btn-primary:disabled {
+  background-color: #d3d3d3;      /* disabled:bg-gray-300 */
+  pointer-events: none;            /* prevent click/hover */
+  transform: none;                 /* disabled:hover:scale-[1] */
+}
+
+/* Prevent hover transform when disabled */
+.btn-primary:disabled:hover {
+  transform: none;
+}

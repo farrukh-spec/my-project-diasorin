@@ -27,6 +27,7 @@ export const customStyle={
       backgroundColor: "#06255B",
       color:"#ffffff !important"
     },
+    fontSize: "0.875rem",
     })
     
 }
