@@ -16,12 +16,13 @@ import AddUser from './UserSection/AddUser'
 import { Loading } from './dashBoard'
 import FilterSelect from './Filter/FilterSelect'
 import Filters from './Filter/Filters'
-import { LISTING_LIMIT,ORDER_DESCENDING } from './UserSection/constant'
+import { LISTING_LIMIT, ORDER_DESCENDING, USER_ACTIVE,USER_PENDING, USER_DISABLED } from './UserSection/constant'
 import _ from 'lodash'
+import ToolTip from './ToolTip'
 AddUser
 const Users = () => {
 
-  
+
   const [Data, setData] = useAtom(userData)
   const [loading, setloading] = useAtom(tableLoading)
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,8 +45,8 @@ const Users = () => {
     sort_order: ORDER_DESCENDING
   })
   //api cal
-  console.log("currentPage",currentPage);
-  
+  console.log("currentPage", currentPage);
+
   const fetchUsers = async () => {
     // tableLoading(true)
 
@@ -61,11 +62,12 @@ const Users = () => {
       const param = {
         limit: LISTING_LIMIT,
         offset: offset,
-        search: "",
-        status: "",
-        role: filters.role ? filters.role.value : "",
-        assigned_lab: "",
-        assigned_department: "",
+        search: appliedFilters.search ? appliedFilters.search : "",
+        status: appliedFilters.user_status ? appliedFilters.user_status.value : "",
+        //role: filters.role ? filters.role.value : "",
+        role: appliedFilters.role ? appliedFilters.role.value : "",
+        assigned_lab: appliedFilters.lab ? appliedFilters.lab.value.id : "",
+        assigned_department: appliedFilters.department ? appliedFilters.department.value.id : "",
         order: "desc",
       }
 
@@ -74,15 +76,30 @@ const Users = () => {
       setCount(res.count)
       const data = res.payload;
       console.log("data", data);
+
+      // const formattedData = data.map(user => ({
+      //   id: user.id,
+      //   name: `${user.first_name || ""} ${user.last_name || ""}`.trim(),
+      //   email: user.email || "-",
+      //   role: user.role || "-",
+      //   status: user.status || (user.is_active ? "ACTIVE" : "INACTIVE"),
+      //   department: user.department || "-",
+      //   labs: user.labs?.length ? user.labs.map(l => l.name).join(", ") : "-"
+      // }));
+
       const formattedData = data.map(user => ({
-        id: user.id,
-        name: `${user.first_name || ""} ${user.last_name || ""}`.trim(),
-        email: user.email || "-",
-        role: user.role || "-",
-        status: user.status || (user.is_active ? "ACTIVE" : "INACTIVE"),
-        department: user.department || "-",
-        labs: user.labs?.length ? user.labs.map(l => l.name).join(", ") : "-"
-      }));
+  id: user.id,
+  name: `${user.first_name || ""} ${user.last_name || ""}`.trim(),
+  email: user.email || "-",
+  role: user.role || "-",
+  status: user.status || (user.is_active ? "ACTIVE" : "INACTIVE"),
+  department: user.department || "-",
+  labs: user.labs?.length ? user.labs.map(l => l.name).join(", ") : "-",
+
+  // ✅ ADD THESE
+  invitation_accepted: user.invitation_accepted,
+  is_active: user.is_active,
+}));
 
       console.log("formatted data", formattedData);
 
@@ -102,22 +119,22 @@ const Users = () => {
   // useEffect(() => {
   //   fetchUsers();
   // }, [])
-const applyFilters = () => {
+  const applyFilters = () => {
     const copy = _.cloneDeep(filters)
     //setCurrentPage(1);
-    
+
     setAppliedFilters(copy)
   }
   useEffect(() => {
-  fetchUsers();
-}, [currentPage])
+    fetchUsers();
+  }, [currentPage])
 
- useEffect(() => {
-  fetchUsers();
-}, [appliedFilters])
+  useEffect(() => {
+    fetchUsers();
+  }, [appliedFilters])
 
   const resetFilters = () => {
-   // setCurrentPage(1)
+    // setCurrentPage(1)
     setFilters({
       search: "",
       user_status: "",
@@ -190,12 +207,47 @@ const applyFilters = () => {
     },
     {
       name: "Status",
-      cell: row => (
-        <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">
-          {row.status}
+      cell: row => {
+        const statusTooltip = !row.invitation_accepted ? "User has not verified yet" : row.invitation_accepted && row.is_active ? "User is active" : "User has been disabled by admin"
+        // <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">
+        //   {row.status}
 
-        </span>
-      ),
+        // </span>
+        return (
+          <div className='flex justify-center' >
+            <ToolTip
+              content={statusTooltip}
+              component={
+                <p
+                  className={`rounded-full py-1 px-2 inline-block mx-auto min-w-[80px] text-center uppercase text-xs font-[600] ${row.invitation_accepted && row.is_active ? "bg-emerald-100 text-emerald-500" : row.invitation_accepted && !row.is_active ? "bg-red-100 text-red-500" : !row.invitation_accepted ? "bg-yellow-100 text-yellow-500" : "bg-gray-100 text-gray-700"}`}>
+                  {/* {
+                   !row.invitation_accepted ?
+                    USER_PENDING.label
+                    :row.invitation_accepted && row.is_active ?
+                     USER_ACTIVE.label
+                     : row.invitation_accepted && !row.is_active ?
+                       USER_DISABLED.label
+                     :
+                     ""
+                  } */}
+                   {
+                                        !row.invitation_accepted ?
+                                            USER_PENDING.label
+                                            : row.invitation_accepted && row.is_active ?
+                                                USER_ACTIVE.label
+                                                :
+                                                row.invitation_accepted && !row.is_active ?
+                                                    USER_DISABLED.label
+                                                    :
+                                                    ""
+                                    }
+
+                </p>
+              }
+            />
+          </div>
+        )
+      },
       sortable: true,
       center: true,
       width: "130px"
@@ -253,7 +305,7 @@ const applyFilters = () => {
       //   },
       center: true,
       //grow: 1,
-      minWidth: '160px',
+      minwidth: '160px',
     },
   ]
 
@@ -320,15 +372,15 @@ const applyFilters = () => {
 
     <div className='p-8 bg-gray-100 h-screen  '>
       <div className='mb-8' >
-    {/* <FilterSelect /> */}
-    <Filters
-    filters={filters}
-    setFilters={setFilters}
-     applyFilters={applyFilters}
-     appliedFilters={appliedFilters}
-     resetFilters={resetFilters}
-    />
-    </div>
+        {/* <FilterSelect /> */}
+        <Filters
+          filters={filters}
+          setFilters={setFilters}
+          applyFilters={applyFilters}
+          appliedFilters={appliedFilters}
+          resetFilters={resetFilters}
+        />
+      </div>
       <div className='flex justify-end  items-center mb-6'>
 
         {/* <button className="bg-[#0B2C5F] text-md text-white px-8 py-2 rounded-md shadow  transition">
@@ -343,7 +395,7 @@ const applyFilters = () => {
       <div className=" shadow-md rounded overflow-hidden  ">
         <DataTable
           columns={columns}
-          
+
           data={Data}
           pagination
           progressComponent={<Loading />}
@@ -353,19 +405,19 @@ const applyFilters = () => {
           onChangePage={page => setCurrentPage(page)}
           paginationDefaultPage={currentPage}
           paginationComponentOptions={{
-            noRowsPerPage: true,  
+            noRowsPerPage: true,
           }}
 
           responsive
           paginationTotalRows={count}
           customStyles={customStyles}
           paginationServer// importent prop
-          //   title="Users List"
-          //count={50}
-          //data={data}
-           //paginationRowsPerPageOptions={[30]}
-           //  rangeSeparatorText: "",
-          
+        //   title="Users List"
+        //count={50}
+        //data={data}
+        //paginationRowsPerPageOptions={[30]}
+        //  rangeSeparatorText: "",
+
         />
       </div>
     </div>
@@ -421,200 +473,3 @@ const Button = ({ fetchUsers }) => {
 
 
 
-
-
-
-// const Button = () => {
-//   const { openModal, closeModal } = useModal();
-//   const [roleTabe, setroleTabe] = useAtom(userRole);
-// console.log("roleTabe",roleTabe);
-
-//   const cardButton = [
-//     {
-//       imageUrl: "https://diasorin-test-dev.netlify.app/images/worker.svg",
-//       tabName: "Worker"
-//     },
-//     {
-//       imageUrl: "https://diasorin-test-dev.netlify.app/images/manager.svg",
-//       tabName: "Manager"
-//     },
-//     {
-//       imageUrl: "https://diasorin-test-dev.netlify.app/images/department-manager.svg",
-//       tabName: "Department Manager"
-//     },
-//     {
-//       imageUrl: "https://diasorin-test-dev.netlify.app/images/keeper.svg",
-//       tabName: "Keeper"
-//     }
-//   ]
-
-//   const schema = Yup.object(
-//     {
-//       firstName: Yup.string().required("rediured"),
-//       lastName: Yup.string().required("reqiured"),
-//       email: Yup.string().email("Invalid Email").required("reqiured")
-//     }
-//   )
-
-
-//   return (
-//     <button className="bg-[#0B2C5F] text-md text-white px-8 py-2  rounded-md shadow  transition"
-//       onClick={() => openModal({
-//         title: "Create New User",
-//         size: "sm",
-//         height: "h-full",
-//         content: (
-//           <>
-
-//             <Formik
-//               initialValues={{ firstName: "", lastName: "", email: "" }}
-//               validationSchema={schema}
-//               onSubmit={(value) => console.log(value)
-//               }
-//             >
-//               {({ errors, touched }) => (
-//                 <Form
-//                   className='p-2  '
-//                 >
-//                   <div className='flex flex-col  gap-4' >
-//                     <div>
-//                       <label
-//                         className='text-sm text-gray-950'
-//                         htmlFor="email">First Name*</label>
-//                       <Field
-//                         name="firstName"
-//                         type="text"
-//                         className={`w-full rounded p-2.5 transition-all shadow-xs
-//       focus:outline-[#0B2C5F]
-//     ${errors.firstName && touched.firstName
-//                             ? "border-2 border-red-600  "
-//                             : "border-2 border-gray-300 "
-//                           }
-//   `}
-//                       />
-//                       <ErrorMessage
-//                         name='firstName'
-//                         component='p'
-//                         className="text-xs text-red-500 mt-1"
-//                       />
-//                     </div>
-
-//                     <div>
-//                       <label
-//                         className=' text-md text-gray-950'
-//                         htmlFor="email">Last Name*</label>
-//                       <Field
-//                         name="lastName"
-//                         className={`w-full rounded p-2.5 transition-all shadow-xs
-//       focus:outline-[#0B2C5F]
-//     ${errors.lastName && touched.lastName
-//                             ? "border-2 border-red-600  "
-//                             : "border-2 border-gray-300 "
-//                           }
-//   `}
-//                         type="text" />
-//                       <ErrorMessage
-//                         name='lastName'
-//                         component='p'
-//                         className="text-xs text-red-500 mt-1"
-//                       />
-//                     </div>
-
-//                     <div>
-//                       <label
-//                         className='text-md text-gray-950'
-//                         htmlFor="email">Email*</label>
-//                       <Field
-//                         name="email"
-//                         className={`w-full rounded p-2.5 transition-all shadow-xs
-//       focus:outline-[#0B2C5F]
-//     ${errors.email && touched.email
-//                             ? "border-2 border-red-600  "
-//                             : "border-2 border-gray-300 "
-//                           }
-//   `}
-
-//                         type="email"
-//                       />
-//                       <ErrorMessage
-//                         name='email'
-//                         component='p'
-//                         className="text-xs text-red-500 mt-1"
-//                       />
-//                     </div>
-//                     {/* <button
-//         type="submit"
-//         className="w-full bg-[#0B2C5F] text-white py-2 rounded-md"
-//       >
-//         Submit
-//       </button> */}
-
-//                     <div className='mt-2' >
-//                       <p className='text-md text-gray-950' >Role*</p>
-//                     </div>
-//                     <div className='grid grid-cols-2 lg:grid-cols-4 gap-5'>
-//                       {cardButton.map((data, index) => (
-//                        <button
-//       type="button"
-//       key={index}
-//       onClick={() =>
-//         setroleTabe({
-//           name: data.tabName,
-//           index: index
-//         })
-//       }
-//       className={`flex flex-col gap-2 justify-center items-center
-//         border-2 rounded p-5 transition duration-200
-//         ${
-//           roleTabe?.index === index
-//             ? "border-[#0B2C5F] shadow-xl"
-//             : "border-gray-400 hover:border-[#0B2C5F] hover:shadow-xl"
-//         }`}
-//     >
-//       <img
-//         src={data.imageUrl}
-//         alt=""
-//         className="w-[55%]"
-//       />
-//       <p className='text-gray-700 text-sm text-center'>
-//         {data.tabName}
-//       </p>
-//     </button>
-//                       ))}
-//                     </div>
-//                     {/* <div className=' flex flex-col gap-2 justify-center items-center border-2 rounded border-gray-400 p-5 transition duration-200 hover:border-[#0B2C5F] hover:shadow-xl ' >
-//                         <img src="https://diasorin-test-dev.netlify.app/images/manager.svg" alt=""
-//                           className=" w-[55%] "
-//                         />
-//                         <p className='text-gray-700 text-sm' >Manager</p>
-//                       </div>
-//                       <div className=' flex flex-col gap-2 justify-center items-center border-2 rounded border-gray-400 p-5 transition duration-200 hover:border-[#0B2C5F] hover:shadow-xl ' >
-//                         <img src="https://diasorin-test-dev.netlify.app/images/department-manager.svg" alt=""
-//                           className=" w-[55%] "
-//                         />
-//                         <p className='text-gray-700 text-center text-sm' >Department Manager</p>
-//                       </div>
-//                       <div className=' flex flex-col gap-2 justify-center items-center border-2 rounded border-gray-400 p-5 transition duration-200 hover:border-[#0B2C5F] hover:shadow-xl ' >
-//                         <img src="https://diasorin-test-dev.netlify.app/images/keeper.svg" alt=""
-//                           className=" w-[55%] "
-//                         />
-//                         <p className='text-gray-700 text-sm' >Keeper</p>
-//                       </div> */}
-//                     {/* </div> */}
-//                     <div className='flex justify-end gap-7'>
-//                       <button className='py-2 px-5 rounded-sm  text-gray-900 border-2 hover:bg-[#0B2C5F]/15 transition duration-200 border-[#0B2C5F]' >Cancel</button>
-//                       <button className='py-2 px-5 rounded-sm bg-[#0B2C5F] transition duration-200 hover:shadow-lg hover:opacity-90  text-white'>Create</button>
-//                     </div>
-//                   </div>
-
-//                 </Form>
-//               )}
-//             </Formik>
-//           </>
-//         )
-//       })}
-//     >
-//       Creat New User
-//     </button>
-//   )
-// }

@@ -3,62 +3,98 @@ import FilterSelect from './FilterSelect'
 //import { ROLES_ARR } from './Constants'
 import { useState } from 'react'
 import { customStyle } from './selectFiledsStyles'
-import { ROLES_ARR,ORDER_DESCENDING,USER_STATUS } from './Constants'
+import { ROLES_ARR, ORDER_DESCENDING, USER_STATUS } from './Constants'
 //import { ORDER_DESCENDING,ROLES_ARR,USER_STATUS } from '../UserSection/constant'
-import _ from 'lodash'
-const Filters = ({filters,setFilters, applyFilters,appliedFilters,resetFilters}) => {
-     const [selectedOption, setSelectedOption] = useState(null)
-const setFilterState=(value,field)=>{
-   // const copy= _.cloneDeep(filters)
-    setFilters(old => {
-        const copy= _.cloneDeep(old)
-        copy[field]=value
-        return copy
-    })
-}
+import _, { values } from 'lodash'
+import FilterSearch from './FilterSearch'
+import FilterSelectApi from './FilterSelectApi'
+const Filters = ({ filters, setFilters, applyFilters, appliedFilters, resetFilters }) => {
+    const [selectedOption, setSelectedOption] = useState(null)
+    const setFilterState = (value, field) => {
+        // const copy= _.cloneDeep(filters)
+        setFilters(old => {
+            const copy = _.cloneDeep(old)
+            copy[field] = value
+            return copy
+        })
+    }
 
-const handleSearchKey = (event)=>{
-if (event.key==="Enter"){
- applyFilters();
-}
-}
-  return (
-   <>
-   <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-5 gap-y-3' >
-   <FilterSelect
-    options={ROLES_ARR}
-        state={filters.role}
-        setState={(value) => setFilterState(value, "role")}
-        placeholder="All "
-        customStyle={customStyle}
-         label_text={"Role"}
-       // isDisabled={true}
-   />
+    const handleSearchKey = (event) => {
+        if (event.key === "Enter") {
+            applyFilters();
+        }
+    }
+    return (
+        <>
+            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-x-5 gap-y-3' >
 
-   <FilterSelect
-    options={USER_STATUS}
-        setSelectedOption={setSelectedOption}
-        selectedOption={selectedOption}
-        isMulti={true}
-        placeholder="All"
-        customStyle={customStyle}
-        label_text={"All"}
-       // isDisabled={true}
-   />
+                <div
+                    onKeyDown={handleSearchKey}
+                >
+                    <FilterSearch
+                        placeholder={"Search"}
+                        label_text={"Search"}
+                        setState={(value) => setFilterState(value, "search")}
+                        state={filters.search}
+                    />
+                </div>
 
-<div 
-className="flex items-end z-0"
->
-    <button
-     disabled={!(appliedFilters.search || appliedFilters?.user_status || appliedFilters?.role || appliedFilters?.department || appliedFilters?.lab || appliedFilters.sort_order.value !== ORDER_DESCENDING.value)}
-     onClick={resetFilters}
-      type="button"
-     className={`w-full rounded-sm col-span-2 btn !py-2 !px-4 h-[42px] !text-sm btn-primary-outline z-0`}
-    >
-Reset Filters
-    </button>
-</div>
-    <div className="flex items-end">
+                <FilterSelect
+                    options={ROLES_ARR}
+                    state={filters.role}
+                    setState={(value) => setFilterState(value, "role")}
+                    placeholder="All "
+                    customStyle={customStyle}
+                    label_text={"Role"}
+                // isDisabled={true}
+                />
+
+                <FilterSelect
+                    options={USER_STATUS}
+                    // isMulti={true}
+                    state={filters.user_status}
+                    setState={(value) => setFilterState(value, "user_status")}
+                    placeholder="All"
+                    customStyle={customStyle}
+                    label_text={"Status"}
+                // isDisabled={true}
+                />
+
+                <FilterSelectApi
+                isClearable={true}
+                    state={filters.department}
+                    setState={(value) => setFilterState(value, "department")}
+                    label_text={ "Department" }
+                    placeholder={ "All" }
+                    // url="api/department"
+                     url="department"
+                valueGenerator={val => ({label:val.name ? val.name : "-",value:val})}
+                />
+
+                  <FilterSelectApi
+                isClearable={true}
+                    state={filters.lab}
+                    setState={(value) => setFilterState(value, "lab")}
+                    label_text={ "Lab" }
+                    placeholder={ "All" }
+                    // url="api/department"
+                     url="lab"
+                valueGenerator={val => ({label:val.name ? val.name : "-",value:val})}
+                />
+
+                <div
+                    className="flex items-end z-0"
+                >
+                    <button
+                        disabled={!(appliedFilters.search || appliedFilters?.user_status || appliedFilters?.role || appliedFilters?.department || appliedFilters?.lab || appliedFilters.sort_order.value !== ORDER_DESCENDING.value)}
+                        onClick={resetFilters}
+                        type="button"
+                        className={`w-full rounded-sm col-span-2 btn !py-2 !px-4 h-[42px] !text-sm btn-primary-outline z-0`}
+                    >
+                        Reset Filters
+                    </button>
+                </div>
+                <div className="flex items-end">
                     <button
                         disabled={
                             filters.search === appliedFilters.search
@@ -82,13 +118,13 @@ Reset Filters
                         className='w-full col-span-2 btn rounded-sm !py-2 !px-4 h-[42px] !text-sm btn-primary'
                     >
                         <p className='relative'>
-                           Apply Filters
+                            Apply Filters
                         </p>
                     </button>
                 </div>
-   </div>
-   </>
-  )
+            </div>
+        </>
+    )
 }
 
 export default Filters

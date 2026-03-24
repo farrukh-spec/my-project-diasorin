@@ -87,3 +87,23 @@ export const ORDER_DESCENDING = {
 }
 
 export const LISTING_LIMIT = 30;
+
+
+export const USER_ACTIVE = {
+    value: "active",
+    label: "Active",
+}
+export const USER_PENDING = {
+    value: "pending",
+    label: "Pending",
+}
+export const USER_DISABLED = {
+    value: "disable",
+    label: "Disabled",
+}
+
+export const USER_STATUS = [
+    USER_ACTIVE,
+    USER_PENDING,
+    USER_DISABLED
+]

@@ -85,7 +85,7 @@ button:focus-visible {
   @apply text-red-500;
 } */
 
-.input-text {
+/* .input-text {
   width: 100%;
   background-color: #fff;
   border: 1px solid #ccc;
@@ -94,13 +94,28 @@ button:focus-visible {
   font-size: 0.875rem;
   outline: none;
   transition: all 0.2s ease;
+} */
+
+.input-text {
+  width: 100%;
+  background-color: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+  outline: none;
+  transition: all 0.2s ease;
 }
 
-.input-text:focus {
-  border-color: #3b82f6; /* blue-500 */
+/* .input-text:focus {
+  border-color: #3b82f6; 
   box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+} */
+.input-text:focus {
+  border-color: #06255B;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
-
 .input-text-active {
   border-color: #10b981; /* emerald-500 */
 }
@@ -108,7 +123,9 @@ button:focus-visible {
 .input-text-error {
   border-color: #ef4444; /* red-500 */
 }
-
+.input-text-error:focus {
+  border-color: #ef4444;
+}
 .input-text-error + label {
   color: #ef4444;
 }
