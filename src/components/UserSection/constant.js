@@ -107,3 +107,4 @@ export const USER_STATUS = [
     USER_PENDING,
     USER_DISABLED
 ]
+export const DESENDING_ORDER = "desc"

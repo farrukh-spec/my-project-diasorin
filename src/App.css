@@ -212,3 +212,10 @@
     @apply bg-background text-foreground;
   }
 }
+.btn {
+  @apply shadow-sm hover:shadow-lg focus:shadow-lg relative min-w-[90px] select-none transition-all font-medium active:scale-[0.98] focus:outline-none rounded-[6px] py-3 px-4 text-sm disabled:bg-gray-300 disabled:text-gray-100 disabled:cursor-no-drop disabled:shadow-none;
+}
+
+.btn-primary-outline {
+  @apply text-primary border-2 border-[#0B2C5F] focus:text-[#0B2C5F] hover:text-[#0B2C5F] hover:border-[#0B2C5F] focus:border-[#0B2C5F] disabled:border-0 disabled:text-white hover:bg-secondary focus:bg-secondary bg-transparent disabled:hover:scale-[1] overflow-hidden disabled:bg-gray-300;
+}

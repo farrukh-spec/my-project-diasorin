@@ -19,6 +19,8 @@ import Filters from './Filter/Filters'
 import { LISTING_LIMIT, ORDER_DESCENDING, USER_ACTIVE,USER_PENDING, USER_DISABLED } from './UserSection/constant'
 import _ from 'lodash'
 import ToolTip from './ToolTip'
+import { useNavigate } from 'react-router-dom'
+import { customStyles } from './tableCustomStyle'
 AddUser
 const Users = () => {
 
@@ -45,6 +47,7 @@ const Users = () => {
     sort_order: ORDER_DESCENDING
   })
   //api cal
+  const navigate = useNavigate();
   console.log("currentPage", currentPage);
 
   const fetchUsers = async () => {
@@ -259,8 +262,10 @@ const Users = () => {
       cell: row => (
 
         <div className="flex gap-2">
-          <button className="bg-blue-900 text-white p-2 text-xs relative group rounded-md"><Eye size={20} /><h1 className='absolute left-1/2 -translate-x-1/2 opacity-0
-         group-hover:opacity-100 transition-opacity   duration-300 pointer-events-none ease-in bg-black py-2 px-1  rounded text-nowrap -top-10' >View Details
+          <button className="bg-blue-900 text-white p-2 text-xs cursor-pointer relative group rounded-md"
+           onClick={()=>navigate(`/users/${row.id}`)}
+          ><Eye size={20} /><h1 className='absolute left-1/2 -translate-x-1/2 opacity-0
+         group-hover:opacity-100 transition-opacity   duration-300 pointer-events-none ease-in bg-black py-2 px-1  rounded text-nowrap -top-10'>View Details
             <span className="
       absolute left-1/2 -translate-x-1/2
       top-full
@@ -336,38 +341,38 @@ const Users = () => {
 
 
 
-  const customStyles = {
-    headRow: {
-      style: {
-        backgroundColor: '#0B2C5F',
-        minHeight: '56px',
-      }
-    },
-    headCells: {
-      style: {
-        color: '#ffffff',
-        fontSize: '14px',
-        fontWeight: '600',
+  // export const customStyles = {
+  //   headRow: {
+  //     style: {
+  //       backgroundColor: '#0B2C5F',
+  //       minHeight: '56px',
+  //     }
+  //   },
+  //   headCells: {
+  //     style: {
+  //       color: '#ffffff',
+  //       fontSize: '14px',
+  //       fontWeight: '600',
 
 
-      }
-    },
-    rows: {
-      style: {
-        minHeight: '60px',
-        fontSize: '14px',
-        borderBottom: "1px solid #e5e7eb",
-        // whiteSpace: "nowrap"
-      },
-    },
-    cells: {
-      style: {
-        // whiteSpace: "nowrap"
-        borderRight: "2px solid #e5e7eb",
-        borderBottom: "1px solid #e5e7eb",
-      }
-    }
-  }
+  //     }
+  //   },
+  //   rows: {
+  //     style: {
+  //       minHeight: '60px',
+  //       fontSize: '14px',
+  //       borderBottom: "1px solid #e5e7eb",
+  //       // whiteSpace: "nowrap"
+  //     },
+  //   },
+  //   cells: {
+  //     style: {
+  //       // whiteSpace: "nowrap"
+  //       borderRight: "2px solid #e5e7eb",
+  //       borderBottom: "1px solid #e5e7eb",
+  //     }
+  //   }
+  // }
   return (
 
     <div className='p-8 bg-gray-100 h-screen  '>

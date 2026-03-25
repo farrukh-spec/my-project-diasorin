@@ -19,6 +19,7 @@ import MainLayout from './components/mainLayout';
 import { Toaster } from './components/ui/sonner';
 import PublicRoutes from './routes/PublicRoutes';
 import { ModalRenderer } from './components/ui/ModalRenderer';
+import UserDetail from './components/UserDetails';
 //import FramerMotion from './components.'
 //import { motion } from 'framer-motion';
 function App() {
@@ -45,6 +46,7 @@ function App() {
   <Route path='/' element={<Layoutdashboard />}>
 <Route index element={<Dashboard />} />
 <Route path='/users' element={<Users />} />
+<Route path='/users/:id' element={<UserDetail/>} />
 <Route path='/departments' element={<Departments />} />
 <Route path='/labs' element={<Labs />} />
 <Route path='/payment' element={<Payment />} />

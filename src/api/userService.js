@@ -15,6 +15,12 @@ export const getUsersTable=async(params)=>{
     
 }
 
+export const getUserById =async(id)=>{
+const response = await api.get(`/user/${id}`)
+return response?.data
+
+}
+
 export const getWorkerUser=async(params)=>{
     const response = await api.get("/lab/",{params: params})
      console.log("lab response",response);
@@ -23,6 +29,15 @@ export const getWorkerUser=async(params)=>{
    
     
 }
+
+// export const getWorkerUser=async(params)=>{
+//     const response = await api.get("/lab/",{params: params})
+//      console.log("lab response",response);
+//     return response?.data;
+
+   
+    
+// }
 
 export const getDepartment=async(params)=>{
     const response = await api.get("/department/",{params: params})

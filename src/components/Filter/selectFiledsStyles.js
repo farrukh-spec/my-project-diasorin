@@ -10,7 +10,7 @@ export const customStyle={
         ...provided,
          borderRadius:"6px",
           minHeight: "42px",
-         border: state.isFocused ? " 2px solid #06255B" :"#d3d3d3 ",
+         border: state.isFocused ? " 2px solid #06255B" :" 2px solid  #d3d3d3 ",
          boxShadow: state.isFocused ? "0px 0px 0px #06255B" : "none",
         "&:hover":{
            //  borderColor: "#d3d3d3",
