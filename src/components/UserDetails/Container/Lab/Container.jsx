@@ -8,6 +8,10 @@ import _ from 'lodash'
 import api from '@/api/axios'
 import Table from './Table'
 import { customStyles } from '@/components/tableCustomStyle'
+import { useModal } from '@/store/useModal'
+import AddUser from '@/components/UserSection/AddUser'
+import AddDepartment from '../Department/AddDepartment'
+import AddLabs from './AddLabs'
 
   function LabContainer({ userData }) {
     const {id} = useParams();
@@ -23,7 +27,7 @@ import { customStyles } from '@/components/tableCustomStyle'
       is_approval: "",
       sort_order: ORDER_DESCENDING
     })
-
+const {openModal,closeModal}=useModal();
     const [appliedFilters, setAppliedFilters] = useState({
       search: "",
       department: "",
@@ -84,15 +88,37 @@ import { customStyles } from '@/components/tableCustomStyle'
             is_approval: "",
             sort_order: ORDER_DESCENDING
         })
+
+        
     }
+
+    
+    const handleNewUser=()=>{
+  openModal({
+          title: "Assign Lab",
+          size: "sm",
+          height: "h-full",
+          content: (
+            <AddLabs
+             // update={null} 
+              id={userData?.id} 
+              role={userData?.role}
+            />
+          )
+  })
+        }
+
+
     return (
-      <div className='max-w-[2300px] w-[97%] mx-auto bg-content-bg rounded-[6px] mb-4 border-base border-2 px-5 pt-5 '>
+      <div className='max-w-[2300px]  w-[97%] mx-auto bg-content-bg rounded-[6px] mb-4 border-base border-2 px-5 pt-5 '>
         <div className=' max-w-[2300px] w-[97%] mx-auto py-5 text-[#0B2C5F]'>
           <h2 className='text-[30px] font-semibold capitalize'>
             Labs
 
           </h2>
         </div>
+
+        
         <Filters
           filters={filters}
           setFilters={setFilters}
@@ -101,9 +127,20 @@ import { customStyles } from '@/components/tableCustomStyle'
           role={userData.role}
           resetFilters={resetFilters}
         />
+
+         <div className='flex justify-end space-x-3 max-w-[2300px] my-6 w-[97%] mx-auto '>
+                    <button
+                        onClick={handleNewUser}
+                        type="button"
+                        className='btn w-[250px] text-center btn-primary'
+                    >
+                        <p>
+                            Assign Lab
+                        </p>
+                    </button>
+                </div>
         <div
-        className='py-5'
-        >
+        className=' my-6 mx-4 rounded-lg  overflow-hidden border-2 border-gray-200' >   
 <Table
 data={data}
 customStyles={customStyles}

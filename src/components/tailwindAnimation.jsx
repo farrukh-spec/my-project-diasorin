@@ -2,7 +2,7 @@ import React from 'react'
 import { RefreshCcw } from 'lucide-react'
 // eslint-disable-next-line no-unused-vars
 import { motion,useScroll } from 'framer-motion'
-import { Loading } from './dashBoard';
+import { Loading } from './dashBoard/dashBoard';
 import Modal2 from './ui/Modal2';
 import { useAtom } from 'jotai';
 import { modalAtom } from '@/store/countAtom';

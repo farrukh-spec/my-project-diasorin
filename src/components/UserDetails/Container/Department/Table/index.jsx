@@ -17,36 +17,37 @@ const Table = ({data,customStyles,role,loading,setSort,currentPage,setCurrentPag
     {
       name:"Lab Id",
       selector: row=> (<div className='font-[600] text-md text-gray-700 flex justify-center'>
-                    <p>{row?.lab?.id}</p>
+                    <p>{row?.department?.id}</p>
                 </div>),
   wrap: true,
             width: "155px"
     },
     {
-      name:"Lab Name",
-      selector: row => (<p onClick={() => navigate(`/lab/${row.id}`)} className='hover:underline cursor-pointer font-[600] text-md text-gray-700'>
-                    {row.lab.name}
+      name:"Department Name",
+      selector: row => (<p onClick={() => navigate(`/department/${row.department.id}`)} className='hover:underline cursor-pointer font-[600] text-md text-gray-700'>
+                    {row?.department?.name}
                 </p>
             ),
             wrap: true
     },
-      {
-            name: <div className='min-w-[200px]'>Department</div>,
-            selector: row => (
-                <p className='font-[600] text-md text-gray-700'>
-                    {row.lab.department_data.name}
-                </p>
-            ),
-            wrap: true
-        },
-         role === ROLE_MANAGER.value && {
+    //   {
+    //         name: <div className='min-w-[200px]'>Department</div>,
+    //         selector: row => (
+    //             <p className='font-[600] text-md text-gray-700'>
+    //                 {row.lab.department_data.name}
+    //             </p>
+    //         ),
+    //         wrap: true
+    //     },
+        {
             name: "Approver",
             selector: row => (
                 <p className='font-[600] text-md text-gray-700'>
                     {APPROVER.find(approver => approver.value === row.is_approval)?.label || '-'}
                 </p>
             ),
-            wrap: true
+            wrap: true,
+            width: "155px"
         },
         {
             name: "Actions",

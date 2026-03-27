@@ -1,14 +1,16 @@
 import React from 'react'
 import { Building, FlaskConical, User, Ticket, Pause, } from 'lucide-react';
+import { Loading } from './dashBoard';
+import NavBreadCrum from '../breadCrum';
 // eslint-disable-next-line no-unused-vars
 import { motion, scale, useAnimation } from 'framer-motion';
 
-import { getUsers } from '../api/userService';
+import { getUsers } from '../../api/userService';
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { apiloadingAtom } from '../store/countAtom';
-import { countdataAtom } from '../store/countAtom';
-const Dashboard = () => {
+import { apiloadingAtom } from '../../store/countAtom';
+import { countdataAtom } from '../../store/countAtom';
+const DashBoardContianer= () => {
 
   const [countData, SetcountData] = useAtom(countdataAtom)
   const [loading, setloading] = useAtom(apiloadingAtom)
@@ -188,36 +190,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
-
-
-//loader
-export const Loading = () => {
-  return (
-    <div className='fixed inset-0 z-40 bg-black/50 flex items-center justify-center ' >
-      <div className=' w-10 h-10  md:w-24 md:h-24 rounded-full border-4 border-gray-400 border-t-blue-800 animate-spin' />
-    </div>
-  )
-}
-
-
-
-
-///responsive card 
-{/* <div className="
-  bg-white bg-opacity-20 
-  h-auto min-h-[140px]
-  w-full sm:w-[220px] md:w-[250px]
-  flex flex-col
-  transition-transform duration-300 hover:-translate-y-2
-  backdrop-blur-lg rounded-lg shadow-lg p-5
-">
-  <div className="flex justify-between items-center w-full">
-    <h1 className="text-sm md:text-md text-gray-800">Tickets</h1>
-    <Ticket className="h-5 w-5 md:h-6 md:w-6 text-gray-800" />
-  </div>
-
-  <h1 className="text-4xl sm:text-5xl md:text-7xl text-gray-800 font-bold">
-    1
-  </h1>
-</div> */}
+export default DashBoardContianer

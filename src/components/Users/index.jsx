@@ -10,19 +10,24 @@ import { useModal } from '@/store/useModal'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
 import { userRole } from '@/store/countAtom'
-import ModalContent from './modal components/modalContent'
-import { useResetLabs } from './utils/resetValue'
-import AddUser from './UserSection/AddUser'
-import { Loading } from './dashBoard'
-import FilterSelect from './Filter/FilterSelect'
-import Filters from './Filter/Filters'
-import { LISTING_LIMIT, ORDER_DESCENDING, USER_ACTIVE,USER_PENDING, USER_DISABLED } from './UserSection/constant'
+import ModalContent from '../modal components/modalContent'
+import { useResetLabs } from '../utils/resetValue'
+import AddUser from '../UserSection/AddUser'
+import { Loading } from '../dashBoard/dashBoard'
+import FilterSelect from '../Filter/FilterSelect'
+import Filters from '../Filter/Filters'
+import { LISTING_LIMIT, ORDER_DESCENDING, USER_ACTIVE,USER_PENDING, USER_DISABLED } from '../UserSection/constant'
 import _ from 'lodash'
-import ToolTip from './ToolTip'
+import ToolTip from '../ToolTip'
 import { useNavigate } from 'react-router-dom'
-import { customStyles } from './tableCustomStyle'
-AddUser
-const Users = () => {
+import { customStyles } from '../tableCustomStyle'
+import Edit from '../UserSection/Actions/Edit'
+import { FaEye } from 'react-icons/fa'
+import Reinvite from '../UserSection/Actions/Reinvite'
+import Status from '../UserSection/Actions/Status'
+import { ROLE_MANAGER,ROLE_WORKER } from '../UserSection/constant'
+//AddUser
+const UsersContainer = () => {
 
 
   const [Data, setData] = useAtom(userData)
@@ -89,15 +94,20 @@ const Users = () => {
       //   department: user.department || "-",
       //   labs: user.labs?.length ? user.labs.map(l => l.name).join(", ") : "-"
       // }));
-
+ console.log("before formatted data", data);
       const formattedData = data.map(user => ({
   id: user.id,
-  name: `${user.first_name || ""} ${user.last_name || ""}`.trim(),
+  // name: `${user.first_name || ""} ${user.last_name || ""}`.trim(),
+  first_name: user.first_name || "",
+  last_name:user.last_name || "",
   email: user.email || "-",
   role: user.role || "-",
   status: user.status || (user.is_active ? "ACTIVE" : "INACTIVE"),
-  department: user.department || "-",
-  labs: user.labs?.length ? user.labs.map(l => l.name).join(", ") : "-",
+  departments: user.departments?.length ? user.departments.map(d => d.name).join(", ") : "-",
+  labs: user.labs?.length &&
+  (user.role === ROLE_MANAGER || user.role === ROLE_WORKER)?
+   user.labs.map(l => l.name).join(", ") 
+   : "-",
 
   // ✅ ADD THESE
   invitation_accepted: user.invitation_accepted,
@@ -175,7 +185,9 @@ const Users = () => {
     },
     {
       name: "Name",
-      selector: row => row.name,
+      selector: row => {
+  return `${row.first_name} ${row.last_name}`;
+},
       sortable: true,
       width: "130px"
     },
@@ -184,7 +196,6 @@ const Users = () => {
       selector: row => row.email,
       wrap: true,
       minWidth: '160px',
-
     },
     {
       name: "Role",
@@ -192,9 +203,6 @@ const Users = () => {
       sortable: true,
       wrap: true,
       minHeight: "145px"
-
-
-
     },
     {
       name: "Labs",
@@ -203,7 +211,7 @@ const Users = () => {
     },
     {
       name: "Department",
-      selector: row => row.department,
+      selector: row => row.departments,
       sortable: true,
       minWidth: "130px",
       grow: 1
@@ -262,7 +270,7 @@ const Users = () => {
       cell: row => (
 
         <div className="flex gap-2">
-          <button className="bg-blue-900 text-white p-2 text-xs cursor-pointer relative group rounded-md"
+          {/* <button className="bg-blue-900 text-white p-2 text-xs cursor-pointer relative group rounded-md"
            onClick={()=>navigate(`/users/${row.id}`)}
           ><Eye size={20} /><h1 className='absolute left-1/2 -translate-x-1/2 opacity-0
          group-hover:opacity-100 transition-opacity   duration-300 pointer-events-none ease-in bg-black py-2 px-1  rounded text-nowrap -top-10'>View Details
@@ -274,9 +282,23 @@ const Users = () => {
       border-l-transparent border-r-transparent
       border-t-black
      
-    "></span></h1></button>
+    "></span></h1></button> */}
+     <ToolTip
+                        content={"View Details"}
+                        component={
+                            <div className='flex justify-center items-center relative'>
+                                <button
+                                    // disabled={true}
+                                     onClick={()=>navigate(`/users/${row.id}`)}
+                                    type="button"
+                                    className='btn btn-primary cursor-pointer !min-w-[40px] !w-[40px] !h-[40px] !p-0 flex items-center justify-center'
+                                >
+                                    <FaEye className='flex-shrink-0 text-lg text-white' />
+                                </button>
+                            </div>
+                        } />
 
-          <button className="bg-blue-900 text-white p-2 text-xs relative group rounded-md"><Ban size={20} /><h1 className='absolute left-1/2 -translate-x-1/2 opacity-0
+          {/* <button className="bg-blue-900 text-white p-2 text-xs relative group rounded-md"><Ban size={20} /><h1 className='absolute left-1/2 -translate-x-1/2 opacity-0
          group-hover:opacity-100 transition-opacity   duration-300 pointer-events-none ease-in bg-black py-2 px-1  rounded text-nowrap -top-10' >Block User
             <span className="
       absolute left-1/2 -translate-x-1/2
@@ -286,11 +308,23 @@ const Users = () => {
       border-l-transparent border-r-transparent
       border-t-black
      
-    "></span></h1></button>
+    "></span></h1></button> */}
+{
+                        !row.invitation_accepted &&
+                        <Reinvite data={row} refreshListing={fetchUsers} />
+                    }
+                    {
+                      row.invitation_accepted &&
+                      <Status
+                      data={row}
+                      refreshListing={fetchUsers}
+                      />
+                    }
 
-
-
-          <button className="bg-blue-900 text-white p-2 text-xs relative group rounded-md"><Pencil size={20} /><h1 className='absolute left-1/2 -translate-x-1/2 opacity-0
+<Edit data={row}
+refreshListing={fetchUsers}
+/>
+          {/* <button className="bg-blue-900 text-white p-2 text-xs relative group rounded-md"><Pencil size={20} /><h1 className='absolute left-1/2 -translate-x-1/2 opacity-0
          group-hover:opacity-100 transition-opacity   duration-300 pointer-events-none ease-in bg-black py-2 px-1  rounded text-nowrap -top-10' >Edit User
             <span className="
       absolute left-1/2 -translate-x-1/2
@@ -300,8 +334,8 @@ const Users = () => {
       border-l-transparent border-r-transparent
       border-t-black
      
-    "></span></h1></button>
-
+    "></span></h1></button> */}
+ 
         </div>
 
       ),
@@ -310,72 +344,12 @@ const Users = () => {
       //   },
       center: true,
       //grow: 1,
-      minwidth: '160px',
+      minWidth: '160px',
     },
   ]
 
-
-
-
-  const data = [
-    {
-      id: 5,
-      name: "Test Manager",
-      email: "manager@yopmail.com",
-      role: "Manager",
-      labs: "Test Lab",
-      department: "-",
-      status: "ACTIVE",
-    },
-    {
-      id: 4,
-      name: "Test Manager",
-      email: "depart_manager@yopmail.com",
-      role: "Department Manager",
-      labs: "-",
-      department: "-",
-      status: "ACTIVE",
-    },
-
-  ];
-
-
-
-  // export const customStyles = {
-  //   headRow: {
-  //     style: {
-  //       backgroundColor: '#0B2C5F',
-  //       minHeight: '56px',
-  //     }
-  //   },
-  //   headCells: {
-  //     style: {
-  //       color: '#ffffff',
-  //       fontSize: '14px',
-  //       fontWeight: '600',
-
-
-  //     }
-  //   },
-  //   rows: {
-  //     style: {
-  //       minHeight: '60px',
-  //       fontSize: '14px',
-  //       borderBottom: "1px solid #e5e7eb",
-  //       // whiteSpace: "nowrap"
-  //     },
-  //   },
-  //   cells: {
-  //     style: {
-  //       // whiteSpace: "nowrap"
-  //       borderRight: "2px solid #e5e7eb",
-  //       borderBottom: "1px solid #e5e7eb",
-  //     }
-  //   }
-  // }
   return (
-
-    <div className='p-8 bg-gray-100 h-screen  '>
+    <div className='p-8 bg-gray-100  sidebar-scroll  '>
       <div className='mb-8' >
         {/* <FilterSelect /> */}
         <Filters
@@ -387,83 +361,54 @@ const Users = () => {
         />
       </div>
       <div className='flex justify-end  items-center mb-6'>
-
-        {/* <button className="bg-[#0B2C5F] text-md text-white px-8 py-2 rounded-md shadow  transition">
-          Creat New User
-        </button> */}
         <Button
-          fetchUsers={fetchUsers}
+          refreshListing={fetchUsers}
         />
       </div>
 
       {/* Table Card */}
-      <div className=" shadow-md rounded overflow-hidden  ">
+      <div className=" shadow-md mb-6  border-2 border-gray-200 rounded overflow-hidden   ">
         <DataTable
           columns={columns}
-
           data={Data}
           pagination
           progressComponent={<Loading />}
           progressPending={loading}
           paginationPerPage={LISTING_LIMIT}
-
           onChangePage={page => setCurrentPage(page)}
           paginationDefaultPage={currentPage}
           paginationComponentOptions={{
             noRowsPerPage: true,
           }}
-
           responsive
           paginationTotalRows={count}
           customStyles={customStyles}
           paginationServer// importent prop
-        //   title="Users List"
-        //count={50}
-        //data={data}
-        //paginationRowsPerPageOptions={[30]}
-        //  rangeSeparatorText: "",
-
         />
       </div>
     </div>
-
   )
 }
 
-export default Users
+export default UsersContainer
 
 
-
-const Button = ({ fetchUsers }) => {
+const Button = ({ refreshListing }) => {
   const { openModal, closeModal } = useModal();
   const { resetAll } = useResetLabs()
 
   return (
     <button className="bg-[#0B2C5F] text-md text-white px-8 py-2  rounded-md shadow  transition"
-      // onClick={() => {openModal({
-      //   title: "Create New User",
-      //   size: "sm",
-      //   height: "h-full",
-      //   content: (
-      //   <ModalContent
-      //   fetchUsers={fetchUsers}
-      //   />
-
-      //   )
-      // });resetAll()}}
-
       onClick={() => {
         openModal({
           title: "Create New User",
           size: "sm",
           height: "h-full",
           content: (
-            // <ModalContent
-            // fetchUsers={fetchUsers}
-            // />
             <AddUser
               update={null}
-              fetchUsers={fetchUsers}
+              //fetchUsers={fetchUsers}
+              refreshListing={refreshListing}
             />
           )
         })

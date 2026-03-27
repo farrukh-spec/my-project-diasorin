@@ -6,7 +6,7 @@ import TextField from './TextField'
 import { useModal } from '@/store/useModal'
 import { ROLES_ARR, ROLE_DEPARTMENT_MANGER, ROLE_MANAGER, ROLE_WORKER, } from './constant'
 import { stringNotEmpty } from '../utils/handleConfirm'
-import { Loading } from '../dashBoard'
+import { Loading } from '../dashBoard/dashBoard'
 import { worker } from 'globals'
 import { LuTrash2 } from 'react-icons/lu';
 import { HiPencil } from 'react-icons/hi2';

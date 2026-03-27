@@ -212,6 +212,9 @@
     @apply bg-background text-foreground;
   }
 }
+.text-primary{
+  @apply text-[#0B2C5F]
+}
 .btn {
   @apply shadow-sm hover:shadow-lg focus:shadow-lg relative min-w-[90px] select-none transition-all font-medium active:scale-[0.98] focus:outline-none rounded-[6px] py-3 px-4 text-sm disabled:bg-gray-300 disabled:text-gray-100 disabled:cursor-no-drop disabled:shadow-none;
 }

@@ -3,7 +3,11 @@ import { ROLES_ARR } from '@/components/UserSection/constant'
 import { ROLE_DEPARTMENT_MANGER,ROLE_MANAGER,ROLE_WORKER } from '@/components/UserSection/constant'
 import DepartmentContainer from './Department/Container'
 import LabContainer from './Lab/Container'
-const Container = ({userData}) => {
+import Edit from '@/components/UserSection/Actions/Edit'
+const Container = ({userData,refreshListing,refreshData}) => {
+    console.log("refreshListing in container index",refreshListing);
+    console.log("refreshData in container index",refreshData);
+    
   return (
     <div>
     
@@ -23,7 +27,10 @@ const Container = ({userData}) => {
                         </p>
                     </div>
                     <div className='p-4'>
-                    {/* <Edit data={userData} refreshListing={refreshListing} /> */}
+                    <Edit data={userData} 
+                    refreshListing={refreshListing} 
+                refreshData={refreshData}
+                    />
                     </div>
                 </div>
 

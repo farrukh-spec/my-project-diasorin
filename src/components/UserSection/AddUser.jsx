@@ -6,12 +6,12 @@ import TextField from './TextField'
 import { useModal } from '@/store/useModal'
 import { ROLES_ARR, ROLE_DEPARTMENT_MANGER, ROLE_MANAGER, ROLE_WORKER, } from './constant'
 import { stringNotEmpty } from '../utils/handleConfirm'
-import { Loading } from '../dashBoard'
+import { Loading } from '../dashBoard/dashBoard'
 import WorkerForm from './WorkerForm'
 import ManagerForm from './ManagerForm'
 import DepartmentForm from './DepartmentForm'
 import { addUser,updateUser } from '@/api/userService'
-const AddUser = ({ update=null, fetchUsers }) => {
+const AddUser = ({ update=null, fetchUsers,refreshListing,refreshData}) => {
     // validation schema
     const initialValues = {
         first_name: update ? update.first_name : "",
@@ -54,11 +54,17 @@ const AddUser = ({ update=null, fetchUsers }) => {
                 }),
                  ... ( values.role.value === ROLE_DEPARTMENT_MANGER.value &&
 
-               { lab_assignments: values.departments.map((dept) => ({
+            //    { lab_assignments: values.departments.map((dept) => ({
+            //         department: dept.id,
+            //         is_approval: dept.is_approval,
+            //        })),
+            //     }
+             { department_assignments: values.departments.map((dept) => ({
                     department: dept.id,
                     is_approval: dept.is_approval,
                    })),
-                }),
+                }
+            ),
             } : {
                 first_name: values.first_name,
                 last_name: values.last_name,
@@ -79,11 +85,17 @@ const AddUser = ({ update=null, fetchUsers }) => {
                 }),
                    ... ( values.role.value === ROLE_DEPARTMENT_MANGER.value &&
 
-               { lab_assignments: values.departments?.map((dept) => ({
+            //    { lab_assignments: values.departments?.map((dept) => ({
+            //         department: dept.id,
+            //         is_approval: dept.is_approval,
+            //        })),
+            //     }
+            { department_assignments: values.departments?.map((dept) => ({
                     department: dept.id,
                     is_approval: dept.is_approval,
                    })),
-                }),
+                }
+            ),
                 
 
             };
@@ -91,14 +103,25 @@ const AddUser = ({ update=null, fetchUsers }) => {
                 let result;
 if (update) {
      result = await updateUser(update.id, payload);
-    console.log("update result", result);
+   // console.log("update result", result);
+    //refreshData()
 }
 else {     result = await addUser(payload);
-    console.log("add result", result);
+    //console.log("add result", result);
 }
 formikBag.setSubmitting(false);
-fetchUsers();
+//refreshData()
 closeModal();
+//refreshData()
+refreshListing()
+//  if (refreshData) refreshData();
+//  console.log("refreshData",refreshData);
+ 
+       if (refreshListing) refreshListing();
+        console.log("refreshListing",refreshListing);
+        
+//await fetchUsers();
+
 
         } catch (error) {
             if (error.response) {

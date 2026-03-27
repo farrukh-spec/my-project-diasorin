@@ -50,6 +50,6 @@ export const addUser=async(payload)=>{
     return response;
 }
 export const updateUser=async(id,payload)=>{
-    const response = await api.put(`/user/${id}/`,payload)
+    const response = await api.patch(`/user/update/${id}`,payload)
     return response;
 }
